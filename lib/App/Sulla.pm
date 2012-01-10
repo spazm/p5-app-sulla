@@ -45,10 +45,10 @@ dispatcher group_chat => as {
     #  - not_command: but not if a command matched
     #  - not_to_me: but not if addressed to me
     #  - run: run this code, but do not respond
-    also not_command not_to_me run_this {
-            my ( $self, $message ) = @_;
-            respond { "hello world" };
-    };
+#    also not_command not_to_me run_this {
+#            my ( $self, $message ) = @_;
+#            respond { "hello world" };
+#    };
 };
 
 1;
