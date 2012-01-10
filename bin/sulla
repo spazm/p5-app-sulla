@@ -7,18 +7,34 @@ use Data::Dumper;
 
 #PODNAME: sulla
 
-my $bot = App::Sulla->new();
+our $debug = 1;
 
-use Data::Dumper;
-$bot->construct_services;
-warn "initialize jabber_chat";
-for my $service ($bot->list_services){ say Dumper { service => $service } }
-$bot->get_service('jabber_chat')->initialize();
-warn "initialize group_herb";
-$bot->get_service('group_herb')->initialize();
-warn "show group names";
-for my $name ($bot->list_group_names) { say " * $name" }
-warn "done show group names";
+
+my $bot = App::Sulla->new(
+    username => 'andrew.grangaard',
+    password => $ENV{JABBER_PASSWORD},
+    domain   => 'chat.demandmedia.net',
+    group    => 'herbbot',
+);
+print Dumper [ $bot->meta->list_services ];
+
+if ($debug)
+{
+    use Data::Dumper;
+    warn "construct services";
+    $bot->construct_services;
+    warn "initialize jabber_chat";
+    for my $service ( $bot->list_services )
+    {
+        say Dumper { service => $service };
+    }
+    $bot->get_service('jabber_chat')->initialize();
+    warn "initialize group_herb";
+    $bot->get_service('group_herb')->initialize();
+    warn "show group names";
+    for my $name ( $bot->list_group_names ) { say " * $name" }
+    warn "done show group names";
+}
 
 warn "run!";
 $bot->run;

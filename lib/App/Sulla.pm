@@ -5,27 +5,35 @@ use v5.10;
 use Bot::Backbone;
 use DateTime;
 
+has username     => ( is => 'ro', isa => 'Str', required   => 1 );
+has password     => ( is => 'ro', isa => 'Str', required   => 1 );
+has domain       => ( is => 'ro', isa => 'Str', required   => 1 );
+has group_domain => ( is => 'ro', isa => 'Str', lazy_build => 1 );
+has group        => ( is => 'ro', isa => 'Str', required   => 1 );
+has debug        => ( is => 'rw', isa => 'Str', default    => 0 );
+
+sub _build_group_domain {
+    'conference.' . $_[0]->domain;
+}
 #ABSTRACT: Bot::Backbone based jabber chat and web robot
-my $username = 'andrew.grangaard';
-my $password = $ENV{JABBER_PASSWORD};
-my $domain   = 'chat.demandmedia.net';
-my $group    = 'herbbot';
 
-#use App::Sulla::Plugin::Foo;
-service jabber_chat => (
-    service      => 'JabberChat',
-    domain       => $domain,
-    group_domain => "conference.$domain",
-    username     => $username,
-    password     => $password,
-);
-
-service group_herb => (
-    service    => 'GroupChat',
-    group      => $group,
-    chat       => 'jabber_chat',
-    dispatcher => 'group_chat', # defined below
-);
+use Data::Dumper;
+before 'construct_services' => sub {
+    my $self = shift;
+    service jabber_chat => (
+        service      => 'JabberChat',
+        domain       => $self->domain,
+        group_domain => $self->group_domain,
+        username     => $self->username,
+        password     => $self->password,
+    );
+    service group_herb => (
+        service    => 'GroupChat',
+        group      => $self->group,
+        chat       => 'jabber_chat',
+        dispatcher => 'group_chat', # defined below
+    );
+};
 
 dispatcher group_chat => as {
     # Report the bot's time
