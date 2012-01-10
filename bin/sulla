@@ -7,8 +7,7 @@ use Data::Dumper;
 
 #PODNAME: sulla
 
-our $debug = 1;
-
+our $debug = 0;
 
 my $bot = App::Sulla->new(
     username => 'andrew.grangaard',
@@ -16,7 +15,6 @@ my $bot = App::Sulla->new(
     domain   => 'chat.demandmedia.net',
     group    => 'herbbot',
 );
-print Dumper [ $bot->meta->list_services ];
 
 if ($debug)
 {
